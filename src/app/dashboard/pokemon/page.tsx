@@ -1,9 +1,7 @@
-import Image from "next/image";
-
-import { PokemonResponse, SimplePokemon } from "@/pokemon";
+import { PokemonGrid, PokemonResponse, SimplePokemon } from "@/pokemon";
 
 const getPokemon = async (limit = 20, offset = 0): Promise<SimplePokemon[]> => {
-  const data: PokemonResponse = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}1&offset=${offset}`)
+  const data: PokemonResponse = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
     .then(response => response.json())
 
   const pokemon = data.results.map((pokemon) => ({
@@ -19,21 +17,11 @@ export default async function PokemonPage() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-wrap gap-10 items-center justify-center">
-        {
-          pokemon.map(({ id, name }) => (
-            <Image
-              key={id}
-              width={100}
-              height={100}
-              alt={name}
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${id}.png`}
-            />
-          ))
-        }
-
-      </div>
-      {JSON.stringify(pokemon)}
+      <span className="text-4xl my-2">
+        Listado de Pokémon <br />
+        <small>estático</small>
+      </span>
+      <PokemonGrid pokemon={pokemon}/>
     </div>
   );
 }
