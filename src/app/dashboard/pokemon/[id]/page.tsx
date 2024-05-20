@@ -1,10 +1,20 @@
-import { Pokemon } from "@/pokemon";
 import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import { Pokemon } from "@/pokemon";
+
 interface Props {
   params: { id: string };
+}
+
+/* Esto solo se va a ejecutar en build-time: */
+export async function generateStaticParams() {
+  const static151Pokemon = Array.from({ length: 151 }).map((item, index) => `${index + 1}` );
+
+  return static151Pokemon.map(( id ) => ({
+    id: id,
+  }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -46,11 +56,10 @@ const getPokemon = async (id: string): Promise<Pokemon> => {
 
 }
 
-
+/* generateStaticParams enviará su valor retornado al objeto params
+de la página: */
 export default async function PokemonPage({ params }: Props) {
-
   const pokemon = await getPokemon(params.id);
-  
 
   return (
     <div className="flex mt-5 flex-col items-center text-slate-800">
