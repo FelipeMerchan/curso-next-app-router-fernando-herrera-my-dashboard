@@ -1,5 +1,10 @@
 import { SimpleWidget } from "@/components";
 
+export const metadata = {
+  title: 'Admin Dashboard',
+  description: 'Seo Title',
+}
+
 export default function MainPage() {
   return (
     <div className="text-black p-2">
