@@ -1,4 +1,4 @@
-import { FavoriteList, PokemonGrid} from "@/pokemon";
+import { FavoriteList} from "@/pokemon";
 
 
 export const metadata = {
