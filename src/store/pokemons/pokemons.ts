@@ -7,13 +7,25 @@ interface PokemonsState {
 }
 
 const getInitialState = (): PokemonsState => {
+  /* Al intentar usar localStorage en build time vamos a tener un error
+  debido a que en el servidor localStorage es undefined. Por lo cual, 
+  para solucionarlo podríamos tener esta validación:
+  if (typeof localStorage === 'undefined') return {};
+    Sin embargo, esta solución no es perfecta debido a que aunque el build ya no falle
+    sí vamos a tener otro error de hydratación debido a que la UI generada en el server
+    fue diferente a la UI generada en el client (debido a que el localStorage tiene
+      almacenada la lista de favoritos que se renderizará en el cliente mientras que en el
+    server la lista de favoritos va a estar vacía porque localStorage es undefined).
+    )
+  */
+
   const favorites = JSON.parse(localStorage.getItem('favorite-pokemons') ?? '{}');
 
   return favorites;
 }
 
 const initialState: PokemonsState = {
-  ...getInitialState(),
+  /* ...getInitialState(), */
 }
 
 const pokemonsSlice = createSlice({
@@ -35,7 +47,7 @@ const pokemonsSlice = createSlice({
       }
 
       /* Esto no se debe hacer en un reducer: */
-      localStorage.setItem('favorite-pokemons', JSON.stringify(state));
+      /* localStorage.setItem('favorite-pokemons', JSON.stringify(state)); */
     }
   },
 });
