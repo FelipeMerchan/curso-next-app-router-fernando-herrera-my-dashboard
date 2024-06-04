@@ -6,7 +6,15 @@ interface PokemonsState {
   [key: string]: SimplePokemon;
 }
 
-const initialState: PokemonsState = {}
+const getInitialState = (): PokemonsState => {
+  const favorites = JSON.parse(localStorage.getItem('favorite-pokemons') ?? '{}');
+
+  return favorites;
+}
+
+const initialState: PokemonsState = {
+  ...getInitialState(),
+}
 
 const pokemonsSlice = createSlice({
   name: 'pokemons',
@@ -21,10 +29,13 @@ const pokemonsSlice = createSlice({
       if (!!state[id]) {
         delete state[id];
         return;
+      } else {
+        /* Si no existe el pokemon en los favoritos lo agregamos: */
+        state[id] = pokemon;
       }
 
-      /* Si no existe el pokemon en los favoritos lo agregamos:   */
-      state[id] = pokemon;
+      /* Esto no se debe hacer en un reducer: */
+      localStorage.setItem('favorite-pokemons', JSON.stringify(state));
     }
   },
 });
