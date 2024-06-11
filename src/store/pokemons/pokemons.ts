@@ -2,8 +2,12 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { SimplePokemon } from '@/pokemon';
 
-interface PokemonsState {
+interface FavoritePokemons {
   [key: string]: SimplePokemon;
+}
+
+interface PokemonsState {
+  favorites: FavoritePokemons;
 }
 
 const getInitialState = (): PokemonsState => {
@@ -26,32 +30,44 @@ const getInitialState = (): PokemonsState => {
 
 const initialState: PokemonsState = {
   /* ...getInitialState(), */
+  favorites: {},
 }
 
 const pokemonsSlice = createSlice({
   name: 'pokemons',
   initialState,
   reducers: {
+    setFavoritePokemons(state, action: PayloadAction<FavoritePokemons>) {
+      /* Le agregamos la propiedad favorites al estado debido
+      a que en este punto requerimos setear nuestro state por un valor,
+      sobreescribiendo lo que haya en el state. Si no hubieramos creado
+      esta propiedad tendríamos que setear el state completo (state = action.payload)
+      y aunque parezca que el state solo tenga las propiedades de nuestro
+      estado, el objeto state tiene muchas propiedades en su prototype 
+      que no vemos, pero que Redux agregó para hacer posible que funcione su sistema
+      y que podríamos eliminar: */
+      state.favorites = action.payload;
+    },
     toggleFavorite(state, action: PayloadAction<SimplePokemon>) {
       const pokemon = action.payload;
       const { id } = pokemon;
 
       /* Si existe el pokemon en los favoritos
       lo eliminamos */
-      if (!!state[id]) {
-        delete state[id];
+      if (!!state.favorites[id]) {
+        delete state.favorites[id];
         return;
       } else {
         /* Si no existe el pokemon en los favoritos lo agregamos: */
-        state[id] = pokemon;
+        state.favorites[id] = pokemon;
       }
 
       /* Esto no se debe hacer en un reducer: */
-      /* localStorage.setItem('favorite-pokemons', JSON.stringify(state)); */
+      localStorage.setItem('favorite-pokemons', JSON.stringify(state.favorites));
     }
   },
 });
 
-export const { toggleFavorite } = pokemonsSlice.actions
+export const { toggleFavorite, setFavoritePokemons } = pokemonsSlice.actions
 
 export default pokemonsSlice.reducer
